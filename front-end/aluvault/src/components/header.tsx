@@ -1,6 +1,3 @@
-import { headers } from 'next/headers';
-import Link from 'next/link';
-
 const Header: React.FC = () => {
     return (
         <div className="flex flex-col items-center">

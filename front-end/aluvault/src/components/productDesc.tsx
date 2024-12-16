@@ -1,13 +1,15 @@
 import React from 'react';
-import { products } from './products';
 
-const ProductDesc: React.FC = () => {
+interface ProductDescProps {
+    name: string;
+    description: string;
+}
+
+const ProductDesc: React.FC<ProductDescProps> = ({ name, description }) => {
     return (
         <div>
-            <h2 className="text-xl font-bold ">Aluminium Suitcase</h2>
-            <p className="list-disc w-64 my-2 font-semibold">
-                Premium aluminum suitcase with reinforced edges and spacious compartments.
-            </p>
+            <h2 className="text-xl font-bold">{name}</h2>
+            <p className="list-disc w-64 my-2 font-semibold">{description}</p>
         </div>
     );
 };

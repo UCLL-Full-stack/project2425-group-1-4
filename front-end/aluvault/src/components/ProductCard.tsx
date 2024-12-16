@@ -1,18 +1,25 @@
 import React from 'react';
+import Image from 'next/image';
+import BlackFront from '@/images/BlackFront.png';
 
 interface ProductCardProps {
+    id: number;
     name: string;
     price: number;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ name, price }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ id, name, price }) => {
+    const handleClick = () => {
+        window.location.href = `/product?id=${id}`;
+    };
+
     return (
-        <a href="./product" className="block w-full sm:w-12/12 md:w-64">
+        <div onClick={handleClick} className="block w-full sm:w-12/12 md:w-64 cursor-pointer">
             <div className="border rounded shadow-md p-4 w-full h-96">
                 <div className="h-4/6 bg-gray-200 flex items-center justify-center">
-                    <img
+                    <Image
                         className="w-full h-full object-cover"
-                        src="https://assets.awaytravel.com/spree/products/47244/original/37131252-0582-470b-8315-86f286860a57.jpg"
+                        src={BlackFront}
                         alt="suitcases"
                     />
                 </div>
@@ -21,7 +28,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, price }) => {
                     <p className="text-gray-600">${price}</p>
                 </div>
             </div>
-        </a>
+        </div>
     );
 };
+
 export default ProductCard;

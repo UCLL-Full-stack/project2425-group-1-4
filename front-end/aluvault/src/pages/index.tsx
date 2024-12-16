@@ -1,14 +1,13 @@
-import Image from 'next/image';
 import './globals.css';
 import Header from '../components/header';
-import ProductPage from '../components/productpage';
+import ProductOverview from '@/components/ProductsOverview';
 import Footer from '@/components/footer';
 
-export default function Home() {
+export default function Products() {
     return (
         <div>
             <Header />
-            <ProductPage />
+            <ProductOverview />
             <Footer />
         </div>
     );
