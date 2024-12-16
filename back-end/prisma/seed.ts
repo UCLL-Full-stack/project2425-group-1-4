@@ -29,6 +29,9 @@ async function main() {
             price: 120.0,
             stock: 20,
             description: 'Lightweight aluminum suitcase, perfect for short trips.',
+            // categories: {
+            //     create: [{ id: travel.id }],
+            // },
         },
     });
 
@@ -38,6 +41,9 @@ async function main() {
             price: 200.0,
             stock: 15,
             description: 'Premium aluminum briefcase for business professionals.',
+            // categories: {
+            //     create: [{ id: business.id }],
+            // },
         },
     });
 
@@ -47,20 +53,10 @@ async function main() {
             price: 300.0,
             stock: 10,
             description: 'Robust storage case for tools and equipment.',
+            //     categories: {
+            //         create: [{ id: storage.id }],
+            //     },
         },
-    });
-
-    // Link Products to Categories
-    await prisma.productCategory.create({
-        data: { productId: suitcase1.id, categoryId: travel.id },
-    });
-
-    await prisma.productCategory.create({
-        data: { productId: suitcase2.id, categoryId: business.id },
-    });
-
-    await prisma.productCategory.create({
-        data: { productId: suitcase3.id, categoryId: storage.id },
     });
 
     // Create Orders
