@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProductCard from './ProductCard';
 import { Product } from '@/types';
 type Props = { products: Product[] };
