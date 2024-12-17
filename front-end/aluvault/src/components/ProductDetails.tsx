@@ -14,6 +14,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorC
         onColorChange(color);
     };
 
+    const handleAddToCart = () => {
+        console.log('Product added'); // Log when button is clicked
+    };
+
     return (
         <div className="flex flex-col gap-4 w-64">
             {/* Price Row */}
@@ -52,7 +56,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorC
                 </div>
             </div>
             <div>
-                <button className="border-gray-300 border w-64 py-1 mt-3">Add to Cart</button>
+                <button className="border-gray-300 border w-64 py-1 mt-3" onClick={handleAddToCart}>
+                    Add to Cart
+                </button>
             </div>
         </div>
     );

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import ProductCard from './ProductCard';
-import { products } from '../dummydata/ProductsData';
+import { Product } from '@/types';
+type Props = { products: Product[] };
 
-const ProductsOverview: React.FC = () => {
-    const [] = useState<number | null>(null);
-
+const ProductsOverview: React.FC<Props> = ({ products }) => {
     return (
         <div className="p-4">
             <div className="grid grid-cols-1_auto md:grid-cols-[auto_auto] gap-x-24 gap-y-8 justify-center">
