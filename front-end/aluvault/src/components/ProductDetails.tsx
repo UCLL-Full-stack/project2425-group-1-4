@@ -8,6 +8,10 @@ interface ProductDetailsProps {
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorChange }) => {
     const [selectedColor, setSelectedColor] = useState<string>(colors[0]);
+    const [quantity, setQuantity] = useState<number>(1);
+
+    const basePrice = parseFloat(price);
+    const totalPrice = (basePrice * quantity).toFixed(2);
 
     const handleColorClick = (color: 'black' | 'grey' | 'turquoise') => {
         setSelectedColor(color);
@@ -15,7 +19,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorC
     };
 
     const handleAddToCart = () => {
-        console.log('Product added'); // Log when button is clicked
+        console.log(`Added ${quantity} items to cart`);
+    };
+
+    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Math.max(1, parseInt(e.target.value) || 1);
+        setQuantity(value);
     };
 
     return (
@@ -23,7 +32,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorC
             {/* Price Row */}
             <div className="flex justify-between items-center">
                 <div className="font-medium">Price</div>
-                <div className="text-right font-bold">{price}</div>
+                <div className="text-right font-bold">${basePrice}</div>
             </div>
 
             {/* Colour Row */}
@@ -51,10 +60,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorC
                         type="number"
                         className="w-16 border border-gray-300 rounded px-2 py-1 text-black"
                         min={1}
-                        placeholder="1"
+                        value={quantity}
+                        onChange={handleQuantityChange}
                     />
                 </div>
             </div>
+            <div className="flex justify-between items-center">
+                <div className="font-medium">Total Price</div>
+                <div className="text-right font-bold">${totalPrice}</div>
+            </div>
+
             <div>
                 <button className="border-gray-300 border w-64 py-1 mt-3" onClick={handleAddToCart}>
                     Add to Cart

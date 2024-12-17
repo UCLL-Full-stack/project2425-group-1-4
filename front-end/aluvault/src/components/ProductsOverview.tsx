@@ -13,6 +13,7 @@ const ProductsOverview: React.FC<Props> = ({ products }) => {
                         id={product.id}
                         name={product.name}
                         price={product.price}
+                        categories={product.categories}
                     />
                 ))}
             </div>

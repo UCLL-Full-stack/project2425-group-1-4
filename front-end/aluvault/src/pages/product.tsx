@@ -6,7 +6,7 @@ import ProductDesc from '../components/ProductDesc';
 import ProductDetails from '../components/ProductDetails';
 import Footer from '@/components/footer';
 import { products } from '@/dummydata/ProductsData';
-import { imagesByColor } from '@/dummydata/ImageData';
+import { imagesByColor } from '@/dummydata/ProductsData';
 import { Product } from '@/dummydata/ProductsData';
 
 const ProductPage = () => {
@@ -42,7 +42,11 @@ const ProductPage = () => {
                     />
                 </div>
                 <div className="flex flex-col">
-                    <ProductDesc name={product.name} description={product.description || ''} />
+                    <ProductDesc
+                        name={product.name}
+                        description={product.description || ''}
+                        categories={[product.categories]}
+                    />
                     <ProductDetails
                         price={`${product.price}$`}
                         colors={['black', 'grey', 'turquoise']}
