@@ -1,12 +1,19 @@
+// Updated ProductDetails Component
 import React, { useState } from 'react';
 
 interface ProductDetailsProps {
     price: string;
     colors: ('black' | 'grey' | 'turquoise')[];
     onColorChange: (color: 'black' | 'grey' | 'turquoise') => void;
+    onAddToCart: (quantity: number) => void;
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorChange }) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({
+    price,
+    colors,
+    onColorChange,
+    onAddToCart,
+}) => {
     const [selectedColor, setSelectedColor] = useState<string>(colors[0]);
     const [quantity, setQuantity] = useState<number>(1);
 
@@ -18,8 +25,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorC
         onColorChange(color);
     };
 
-    const handleAddToCart = () => {
-        console.log(`Added ${quantity} items to cart`);
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onAddToCart(quantity);
     };
 
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +36,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorC
     };
 
     return (
-        <div className="flex flex-col gap-4 w-64">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-64">
             {/* Price Row */}
             <div className="flex justify-between items-center">
                 <div className="font-medium">Price</div>
@@ -70,12 +78,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ price, colors, onColorC
                 <div className="text-right font-bold">${totalPrice}</div>
             </div>
 
-            <div>
-                <button className="border-gray-300 border w-64 py-1 mt-3" onClick={handleAddToCart}>
-                    Add to Cart
-                </button>
-            </div>
-        </div>
+            <button type="submit" className="border-gray-300 border w-64 py-1 mt-3">
+                Add to Cart
+            </button>
+        </form>
     );
 };
 
