@@ -55,7 +55,8 @@ export const products: Product[] = [
         name: 'Aluminum Carry-On Suitcase',
         price: 199.99,
         stock: 50,
-        description: 'Lightweight and durable carry-on aluminum suitcase with TSA-approved locks.',
+        description:
+            'Lightweight and resilient carry-on aluminum suitcase with TSA-approved locks.',
         color: 'black',
         image: imagesByColor['black'],
         categories: [
