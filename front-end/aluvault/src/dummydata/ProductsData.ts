@@ -14,6 +14,7 @@ import TurquoiseSide1 from '../images/TurquoiseSide1.png';
 import TurquoiseSide2 from '../images/TurquoiseSide2.png';
 import { StaticImageData } from 'next/image';
 import { Image, Product, ProductCategory } from '@/types';
+
 export const imagesByColor = {
     black: {
         topImage: BlackFront,
