@@ -13,6 +13,7 @@ import TurquoiseBack from '../images/TurquoiseBack.png';
 import TurquoiseSide1 from '../images/TurquoiseSide1.png';
 import TurquoiseSide2 from '../images/TurquoiseSide2.png';
 import { StaticImageData } from 'next/image';
+import { Image, Product, ProductCategory } from '@/types';
 export const imagesByColor = {
     black: {
         topImage: BlackFront,
@@ -27,27 +28,6 @@ export const imagesByColor = {
         bottomImages: [TurquoiseBack, TurquoiseSide1, TurquoiseSide2],
     },
 };
-
-export interface Image {
-    topImage: string | StaticImageData;
-    bottomImages: (string | StaticImageData)[];
-}
-
-export interface ProductCategory {
-    id: number;
-    name: string;
-}
-
-export interface Product {
-    id: number;
-    name: string;
-    price: number;
-    stock: number;
-    description?: string;
-    color: string;
-    image: Image;
-    categories: ProductCategory[];
-}
 
 export const products: Product[] = [
     {
