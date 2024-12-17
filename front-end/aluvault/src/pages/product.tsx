@@ -7,7 +7,6 @@ import ProductDetails from '../components/ProductDetails';
 import Footer from '@/components/footer';
 import { products } from '@/dummydata/ProductsData';
 import { imagesByColor } from '@/dummydata/ProductsData';
-import { Product } from '@/dummydata/ProductsData';
 
 const ProductPage = () => {
     const [selectedColor, setSelectedColor] = useState<'black' | 'grey' | 'turquoise'>('black');

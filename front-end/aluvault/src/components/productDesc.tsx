@@ -14,7 +14,7 @@ const ProductDesc: React.FC<ProductDescProps> = ({ name, description, categories
             <div>
                 {categories[0].map((category) => (
                     <p
-                        className="bg-slate-100 w-24 text-xs text-black rounded-3xl my-1"
+                        className="bg-slate-100 w-24 text-xs text-center text-black rounded-3xl my-1"
                         key={category.id}
                     >
                         {category.name}
