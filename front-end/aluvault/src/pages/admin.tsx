@@ -22,6 +22,7 @@ const AddProduct: React.FC = () => {
     });
 
     const [categoryInput, setCategoryInput] = useState<string>('');
+    const [bottomImagesInput, setBottomImagesInput] = useState<string>('');
 
     // Add Product Handler
     const handleAddProduct = () => {
@@ -29,10 +30,13 @@ const AddProduct: React.FC = () => {
             .split(',')
             .map((name, index) => ({ id: index + 1, name: name.trim() }));
 
+        const parsedBottomImages: string[] = bottomImagesInput.split(',').map((url) => url.trim());
+
         const newProductEntry: Product = {
             ...newProduct,
             id: isEditing && editProductId !== null ? editProductId : productItems.length + 1,
             categories: parsedCategories,
+            image: { ...newProduct.image, bottomImages: parsedBottomImages },
         };
 
         if (isEditing && editProductId !== null) {
@@ -61,6 +65,7 @@ const AddProduct: React.FC = () => {
             });
 
             setCategoryInput(productToEdit.categories.map((cat) => cat.name).join(', '));
+            setBottomImagesInput(productToEdit.image.bottomImages.join(', '));
             setIsEditing(true);
             setEditProductId(id);
             setShowPopup(true);
@@ -82,6 +87,7 @@ const AddProduct: React.FC = () => {
             categories: [],
         });
         setCategoryInput('');
+        setBottomImagesInput('');
         setIsEditing(false);
         setEditProductId(null);
         setShowPopup(false);
@@ -107,6 +113,7 @@ const AddProduct: React.FC = () => {
                         <th className="py-2 px-4 border">Stock</th>
                         <th className="py-2 px-4 border">Color</th>
                         <th className="py-2 px-4 border">Categories</th>
+                        <th className="py-2 px-4 border">Description</th>
                         <th className="py-2 px-4 border">Actions</th>
                     </tr>
                 </thead>
@@ -129,6 +136,7 @@ const AddProduct: React.FC = () => {
                             <td className="py-2 px-4 border">
                                 {product.categories.map((cat) => cat.name).join(', ')}
                             </td>
+                            <td className="py-2 px-4 border">{product.description}</td>
                             <td className="py-2 px-4 border">
                                 <button
                                     className="bg-yellow-400 text-white px-2 py-1 rounded mr-2"
@@ -151,7 +159,7 @@ const AddProduct: React.FC = () => {
             {/* Add/Edit Product Popup */}
             {showPopup && (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-black p-6 rounded shadow-lg w-1/3">
+                    <div className="bg-white p-6 rounded shadow-lg w-1/3">
                         <h2 className="text-xl font-bold mb-4">
                             {isEditing ? 'Edit Product' : 'Add New Product'}
                         </h2>

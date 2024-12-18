@@ -19,3 +19,12 @@ export type Product = {
     description?: string;
     categories: ProductCategory[];
 };
+
+export interface CartItem {
+    id: number;
+    name: string;
+    price: number;
+    quantity: number;
+    color: string;
+    image: StaticImageData;
+}

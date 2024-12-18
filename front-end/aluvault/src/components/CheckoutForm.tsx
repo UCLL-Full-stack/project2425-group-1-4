@@ -46,7 +46,6 @@ const PaymentForm: React.FC = () => {
                         className="w-full border border-white rounded px-3 py-2 bg-black text-white focus:outline-none focus:ring-1 focus:ring-white"
                     />
                 </div>
-
                 {/* Expiration Date & Security Code */}
                 <div className="flex gap-4 mb-4">
                     <div className="flex-1">
