@@ -10,6 +10,7 @@ import { imagesByColor } from '@/dummydata/ProductsData';
 import { Product } from '@/dummydata/ProductsData';
 import { CartItem } from '@/types';
 import Image from 'next/image';
+import shoppingCartIcon from '../images/shopping-cart.png';
 
 const ProductPage = () => {
     const [selectedColor, setSelectedColor] = useState<'black' | 'grey' | 'turquoise'>('black');
@@ -58,6 +59,18 @@ const ProductPage = () => {
     return (
         <div>
             <Header />
+
+            {/* Shopping Cart Icon */}
+            <div className="fixed top-4 right-4 z-50">
+                <button onClick={() => setIsCartOpen((prev) => !prev)}>
+                    <Image
+                        src={shoppingCartIcon}
+                        alt="Shopping Cart"
+                        className="w-12 h-12 object-contain cursor-pointer"
+                    />
+                </button>
+            </div>
+
             <div className="flex flex-row justify-center gap-16 mt-32">
                 <div className="flex flex-col justify-center items-center">
                     <ImageGallery
@@ -91,7 +104,7 @@ const ProductPage = () => {
 
             {/* Cart Sidebar */}
             {isCartOpen && (
-                <div className="fixed right-0 top-0 h-full w-1/3 bg-gray-800 shadow-md flex flex-col p-4">
+                <div className="fixed right-0 top-0 h-full w-1/3 bg-gray-800 shadow-md flex flex-col p-4 z-50">
                     <h2 className="text-xl font-bold">Cart</h2>
                     {cartItems.length === 0 ? (
                         <p>Your cart is empty.</p>
