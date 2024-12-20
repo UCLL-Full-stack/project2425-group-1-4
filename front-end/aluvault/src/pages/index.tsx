@@ -38,7 +38,7 @@ export default function Products() {
 
     const handleCheckout = () => {
         console.log('Proceeding to checkout with items:', cartItems);
-        setCartItems([]);
+
         window.location.href = `/checkout`;
     };
 

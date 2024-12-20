@@ -54,9 +54,8 @@ const ProductPage = () => {
 
     const handleCheckout = () => {
         console.log('Proceeding to checkout with items:', cartItems);
-        setCartItems([]);
+
         setIsCartOpen(false);
-        localStorage.removeItem('cartItems'); // Clear cart in localStorage
         window.location.href = `/checkout`;
     };
 
