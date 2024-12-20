@@ -134,6 +134,17 @@ const PaymentForm: React.FC = () => {
                         <ul className="mb-4">
                             {cartItems.map((item, index) => (
                                 <li key={index} className="flex justify-between items-center mb-2">
+                                    {/* Product Image */}
+                                    {item.image && item.image.src ? (
+                                        <img
+                                            src={item.image.src}
+                                            alt={item.name}
+                                            className="w-12 h-12 rounded-md object-cover mr-4"
+                                        />
+                                    ) : (
+                                        <div className="w-16 h-16 bg-gray-300 mr-4"></div> // Placeholder if no image
+                                    )}
+
                                     <span>
                                         {item.name} ({item.color}) x {item.quantity}
                                     </span>

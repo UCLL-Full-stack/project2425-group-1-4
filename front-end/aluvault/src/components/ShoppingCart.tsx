@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import shoppingCartIcon from '../images/shopping-cart.png';
 import { CartItem } from '@/types';
@@ -20,6 +20,20 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
     isCartOpen,
     setIsCartOpen,
 }) => {
+    const [isEmptyCartPopupOpen, setIsEmptyCartPopupOpen] = useState(false);
+
+    const handleCheckout = () => {
+        if (cartItems.length === 0) {
+            setIsEmptyCartPopupOpen(true);
+        } else {
+            onCheckout();
+        }
+    };
+
+    const closeEmptyCartPopup = () => {
+        setIsEmptyCartPopupOpen(false);
+    };
+
     return (
         <div>
             {/* Shopping Cart Icon */}
@@ -68,7 +82,10 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                             ))}
                         </ul>
                     )}
-                    <button className="bg-blue-500 text-white py-2 px-4 mt-4" onClick={onCheckout}>
+                    <button
+                        className="bg-blue-500 text-white py-2 px-4 mt-4"
+                        onClick={handleCheckout}
+                    >
                         Checkout
                     </button>
                     <button
@@ -77,6 +94,24 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                     >
                         Close
                     </button>
+                </div>
+            )}
+
+            {/* Empty Cart Popup */}
+            {isEmptyCartPopupOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded shadow-md text-center">
+                        <h2 className="text-xl font-bold mb-4 text-black">Your cart is empty!</h2>
+                        <p className="mb-6 text-black">
+                            Add items to your cart before checking out.
+                        </p>
+                        <button
+                            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                            onClick={closeEmptyCartPopup}
+                        >
+                            Close
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
