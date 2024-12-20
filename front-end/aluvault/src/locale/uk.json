@@ -1,0 +1,31 @@
+{
+    "form": {
+        "orderSummary": "Фінальне замовлення",
+        "cartEmpty": "Ваш кошик порожній.",
+        "total": "Разом",
+        "email": "Електронна пошта",
+        "emailPlaceholder": "Введіть вашу електронну адресу",
+        "emailError": "Будь ласка, введіть дійсну електронну адресу.",
+        "shippingAddress": "Адреса доставки",
+        "shippingAddressPlaceholder": "Введіть вашу адресу доставки",
+        "shippingAddressError": "Адреса доставки не може бути порожньою.",
+        "shippingMethod": "Спосіб доставки",
+        "shippingNovaPost": "Нова Пошта",
+        "shippingBpost": "Bpost",
+        "cardNumber": "Номер картки",
+        "cardNumberPlaceholder": "Введіть номер вашої картки з 16 цифр",
+        "cardNumberError": "Номер картки має містити 16 цифр та бути числовим.",
+        "expirationDate": "Термін дії",
+        "expirationDatePlaceholder": "ММ/РР",
+        "expirationDateError": "Термін дії повинен бути у форматі ММ/РР та дійсним.",
+        "securityCode": "Код безпеки",
+        "securityCodePlaceholder": "Введіть 3-значний код безпеки",
+        "securityCodeError": "Код безпеки має містити 3 числові цифри.",
+        "payNow": "Сплатити зараз",
+        "successMessage": "Оплата пройшла успішно! Дякуємо за вашу покупку.",
+        "errorSummary": {
+            "missingFields": "Деякі поля відсутні або містять помилки. Будь ласка, перевірте форму.",
+            "generalError": "Сталася помилка під час обробки вашого платежу. Спробуйте ще раз."
+        }
+    }
+}

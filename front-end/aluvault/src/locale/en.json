@@ -1,0 +1,31 @@
+{
+    "form": {
+        "orderSummary": "Order Summary",
+        "cartEmpty": "Your cart is empty.",
+        "total": "Total",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email",
+        "emailError": "Please enter a valid email address.",
+        "shippingAddress": "Shipping Address",
+        "shippingAddressPlaceholder": "Enter your shipping address",
+        "shippingAddressError": "Shipping address cannot be empty.",
+        "shippingMethod": "Shipping Method",
+        "shippingNovaPost": "Nova Post",
+        "shippingBpost": "Bpost",
+        "cardNumber": "Card Number",
+        "cardNumberPlaceholder": "Enter your 16-digit card number",
+        "cardNumberError": "Card number must be 16 digits and numeric only.",
+        "expirationDate": "Expiration Date",
+        "expirationDatePlaceholder": "MM/YY",
+        "expirationDateError": "Expiration date must be in the format MM/YY and valid.",
+        "securityCode": "Security Code",
+        "securityCodePlaceholder": "Enter your 3-digit security code",
+        "securityCodeError": "Security code must be 3 numeric digits.",
+        "payNow": "Pay Now",
+        "successMessage": "Your payment was successful! Thank you for your purchase.",
+        "errorSummary": {
+            "missingFields": "Some fields are missing or contain errors. Please review the form.",
+            "generalError": "There was an error processing your payment. Please try again."
+        }
+    }
+}
