@@ -28,3 +28,15 @@ export interface CartItem {
     color: string;
     image: StaticImageData;
 }
+
+export enum UserRole {
+    USER = 'USER',
+    ADMIN = 'ADMIN',
+}
+
+export interface User {
+    id: number;
+    email: string;
+    password: string;
+    role: UserRole;
+}

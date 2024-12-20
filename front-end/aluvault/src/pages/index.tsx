@@ -2,13 +2,29 @@ import './globals.css';
 import Header from '../components/header';
 import ProductOverview from '@/components/ProductsOverview';
 import Footer from '@/components/footer';
-import { products } from '@/dummydata/ProductsData';
 import { useEffect, useState } from 'react';
 import { CartItem } from '@/types';
 import ShoppingCart from '@/components/ShoppingCart';
+import RentService from '../../service/ProductService';
+import useSWR from 'swr';
+
 export default function Products() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const fetchProducts = async () => {
+        try {
+            return await RentService.getProducts();
+        } catch (error) {
+            console.error('Error fetching fetchProducts:', error);
+            throw error;
+        }
+    };
+
+    const { data } = useSWR('fetchProducts', fetchProducts, {
+        suspense: false,
+        revalidateOnFocus: true,
+    });
 
     // Load cart items from localStorage when the component mounts
     useEffect(() => {
@@ -41,7 +57,7 @@ export default function Products() {
 
         window.location.href = `/checkout`;
     };
-
+    console.log(data);
     return (
         <div>
             <Header />
@@ -53,7 +69,7 @@ export default function Products() {
                 isCartOpen={isCartOpen}
                 setIsCartOpen={setIsCartOpen}
             />
-            <ProductOverview products={products} />
+            {data && <ProductOverview products={data} />}
             <Footer />
         </div>
     );

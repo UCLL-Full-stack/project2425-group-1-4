@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './globals.css';
-import { products } from '@/dummydata/ProductsData';
 import Image from 'next/image';
-import { Product, ProductCategory } from '@/types';
+import { Product } from '@/types';
+import RentService from '../../service/ProductService';
+import { imagesByColor } from '@/dummydata/ProductsData'; // Import imagesByColor mapping
 
-const AddProduct: React.FC = () => {
-    const [productItems, setProductItems] = useState<Product[]>(products);
-
+const Admin: React.FC = () => {
+    const [productItems, setProductItems] = useState<Product[]>([]);
     const [showPopup, setShowPopup] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editProductId, setEditProductId] = useState<number | null>(null);
@@ -21,36 +21,89 @@ const AddProduct: React.FC = () => {
         categories: [],
     });
 
+    const [formData, setFormData] = useState({
+        name: '',
+        price: '',
+        stock: '',
+        description: '',
+        color: '',
+        categories: [],
+    });
+
     const [categoryInput, setCategoryInput] = useState<string>('');
-    const [bottomImagesInput, setBottomImagesInput] = useState<string>('');
 
-    // Add Product Handler
-    const handleAddProduct = () => {
-        const parsedCategories: ProductCategory[] = categoryInput
-            .split(',')
-            .map((name, index) => ({ id: index + 1, name: name.trim() }));
+    // Fetch products on component mount
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const productsFromDb = await RentService.getProducts();
 
-        const parsedBottomImages: string[] = bottomImagesInput.split(',').map((url) => url.trim());
+                const productsWithImages = productsFromDb.map((product: Product, index: number) => {
+                    // Manually assign colors based on a round-robin pattern
+                    const colorKeys = ['black', 'grey', 'turquoise'];
+                    const assignedColor = colorKeys[index % colorKeys.length];
 
-        const newProductEntry: Product = {
-            ...newProduct,
-            id: isEditing && editProductId !== null ? editProductId : productItems.length + 1,
-            categories: parsedCategories,
-            image: { ...newProduct.image, bottomImages: parsedBottomImages },
+                    return {
+                        ...product,
+                        color: assignedColor, // Assign the color manually
+                        image: imagesByColor[assignedColor],
+                    };
+                });
+
+                setProductItems(productsWithImages);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
         };
 
-        if (isEditing && editProductId !== null) {
-            setProductItems((prev) =>
-                prev.map((product) => (product.id === editProductId ? newProductEntry : product))
-            );
-        } else {
-            setProductItems([...productItems, newProductEntry]);
-        }
+        fetchProducts();
+    }, []);
 
-        // Reset form and state
-        resetForm();
+    // Add or edit a product
+    const handleAddOrEditProduct = async () => {
+        try {
+            const categories = categoryInput.split(',').map((name, index) => ({
+                id: index + 1,
+                name: name.trim(),
+            }));
+
+            const productData = { ...newProduct, categories };
+
+            if (isEditing && editProductId !== null) {
+                await RentService.editProduct(editProductId, productData as Product);
+            } else {
+                await RentService.createProduct(productData as Product);
+            }
+
+            // Refresh products
+            const updatedProducts = await RentService.getProducts();
+            setProductItems(
+                updatedProducts.map((product: Product) => ({
+                    ...product,
+                    image: imagesByColor[product.color.toLowerCase()] || {
+                        topImage: '',
+                        bottomImages: [],
+                    },
+                }))
+            );
+
+            resetForm();
+        } catch (error) {
+            console.error(isEditing ? 'Error editing product' : 'Error adding product:', error);
+        }
     };
 
+    // Delete a product
+    const handleDelete = async (id: number) => {
+        try {
+            await RentService.deleteProduct(id);
+            setProductItems(productItems.filter((product) => product.id !== id));
+        } catch (error) {
+            console.error(`Error deleting product with ID ${id}:`, error);
+        }
+    };
+
+    // Edit product handler
     const handleEdit = (id: number) => {
         const productToEdit = productItems.find((product) => product.id === id);
         if (productToEdit) {
@@ -63,17 +116,11 @@ const AddProduct: React.FC = () => {
                 description: productToEdit.description,
                 categories: productToEdit.categories,
             });
-
             setCategoryInput(productToEdit.categories.map((cat) => cat.name).join(', '));
-            setBottomImagesInput(productToEdit.image.bottomImages.join(', '));
             setIsEditing(true);
             setEditProductId(id);
             setShowPopup(true);
         }
-    };
-
-    const handleDelete = (id: number) => {
-        setProductItems(productItems.filter((product) => product.id !== id));
     };
 
     const resetForm = () => {
@@ -87,7 +134,6 @@ const AddProduct: React.FC = () => {
             categories: [],
         });
         setCategoryInput('');
-        setBottomImagesInput('');
         setIsEditing(false);
         setEditProductId(null);
         setShowPopup(false);
@@ -103,7 +149,6 @@ const AddProduct: React.FC = () => {
                 Add Product
             </button>
 
-            {/* Product Table */}
             <table className="min-w-full border">
                 <thead>
                     <tr>
@@ -119,12 +164,11 @@ const AddProduct: React.FC = () => {
                 </thead>
                 <tbody>
                     {productItems.map((product) => (
-                        <tr key={product.id} className="text-center">
+                        <tr key={product.id}>
                             <td className="py-2 px-4 border">
                                 <Image
-                                    src={product.image.topImage as string}
+                                    src={product.image.topImage}
                                     alt={product.name}
-                                    className="w-16 h-16 object-cover mx-auto"
                                     width={64}
                                     height={64}
                                 />
@@ -156,58 +200,149 @@ const AddProduct: React.FC = () => {
                 </tbody>
             </table>
 
-            {/* Add/Edit Product Popup */}
             {showPopup && (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-6 rounded shadow-lg w-1/3">
                         <h2 className="text-xl font-bold mb-4">
                             {isEditing ? 'Edit Product' : 'Add New Product'}
                         </h2>
-                        <div className="flex flex-col">
-                            <label>Name</label>
-                            <input
-                                type="text"
-                                className="border px-2 py-1 mb-3"
-                                value={newProduct.name}
-                                onChange={(e) =>
-                                    setNewProduct({ ...newProduct, name: e.target.value })
-                                }
-                            />
-                            <label>Price</label>
-                            <input
-                                type="number"
-                                className="border px-2 py-1 mb-3"
-                                value={newProduct.price}
-                                onChange={(e) =>
-                                    setNewProduct({ ...newProduct, price: +e.target.value })
-                                }
-                            />
-                            <label>Stock</label>
-                            <input
-                                type="number"
-                                className="border px-2 py-1 mb-3"
-                                value={newProduct.stock}
-                                onChange={(e) =>
-                                    setNewProduct({ ...newProduct, stock: +e.target.value })
-                                }
-                            />
-                            <label>Color</label>
-                            <input
-                                type="text"
-                                className="border px-2 py-1 mb-3"
-                                value={newProduct.color}
-                                onChange={(e) =>
-                                    setNewProduct({ ...newProduct, color: e.target.value })
-                                }
-                            />
-                            <label>Categories (comma-separated)</label>
-                            <input
-                                type="text"
-                                className="border px-2 py-1 mb-3"
-                                value={categoryInput}
-                                onChange={(e) => setCategoryInput(e.target.value)}
-                            />
-                        </div>
+                        {/* Form Fields */}
+                        <form>
+                            {/* Name */}
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="name"
+                                    className="block text-gray-700 font-bold mb-2"
+                                >
+                                    Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    value={formData.name}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, name: e.target.value })
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    placeholder="Enter product name"
+                                    required
+                                />
+                            </div>
+                            {/* Price */}
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="price"
+                                    className="block text-gray-700 font-bold mb-2"
+                                >
+                                    Price
+                                </label>
+                                <input
+                                    type="number"
+                                    id="price"
+                                    value={formData.price}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            price: parseFloat(e.target.value),
+                                        })
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    placeholder="Enter product price"
+                                    required
+                                />
+                            </div>
+                            {/* Stock */}
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="stock"
+                                    className="block text-gray-700 font-bold mb-2"
+                                >
+                                    Stock
+                                </label>
+                                <input
+                                    type="number"
+                                    id="stock"
+                                    value={formData.stock}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            stock: parseInt(e.target.value, 10),
+                                        })
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    placeholder="Enter stock quantity"
+                                    required
+                                />
+                            </div>
+                            {/* Color */}
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="color"
+                                    className="block text-gray-700 font-bold mb-2"
+                                >
+                                    Color
+                                </label>
+                                <select
+                                    id="color"
+                                    value={formData.color}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, color: e.target.value })
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    required
+                                >
+                                    <option value="">Select a color</option>
+                                    <option value="black">Black</option>
+                                    <option value="grey">Grey</option>
+                                    <option value="turquoise">Turquoise</option>
+                                </select>
+                            </div>
+                            {/* Description */}
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="description"
+                                    className="block text-gray-700 font-bold mb-2"
+                                >
+                                    Description
+                                </label>
+                                <textarea
+                                    id="description"
+                                    value={formData.description}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, description: e.target.value })
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    placeholder="Enter product description"
+                                    required
+                                />
+                            </div>
+                            {/* Categories */}
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="categories"
+                                    className="block text-gray-700 font-bold mb-2"
+                                >
+                                    Categories (IDs)
+                                </label>
+                                <input
+                                    type="text"
+                                    id="categories"
+                                    value={formData.categories}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            categories: e.target.value
+                                                .split(',')
+                                                .map((id) => parseInt(id.trim(), 10)),
+                                        })
+                                    }
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    placeholder="Enter category IDs separated by commas"
+                                    required
+                                />
+                            </div>
+                        </form>
+                        {/* Buttons */}
                         <div className="flex justify-end mt-4">
                             <button
                                 className="bg-gray-500 text-white px-3 py-1 rounded mr-2"
@@ -217,7 +352,7 @@ const AddProduct: React.FC = () => {
                             </button>
                             <button
                                 className="bg-green-500 text-white px-3 py-1 rounded"
-                                onClick={handleAddProduct}
+                                onClick={handleAddOrEditProduct}
                             >
                                 {isEditing ? 'Save Changes' : 'Add Product'}
                             </button>
@@ -229,4 +364,4 @@ const AddProduct: React.FC = () => {
     );
 };
 
-export default AddProduct;
+export default Admin;

@@ -5,10 +5,10 @@ import Header from '../components/header';
 import ProductDesc from '../components/ProductDesc';
 import ProductDetails from '../components/ProductDetails';
 import Footer from '@/components/footer';
-import { products, imagesByColor } from '@/dummydata/ProductsData';
-import { Product } from '@/dummydata/ProductsData';
-import { CartItem } from '@/types';
 import ShoppingCart from '../components/ShoppingCart';
+import RentService from '../../service/ProductService';
+import { CartItem, Product } from '@/types';
+import { imagesByColor } from '@/dummydata/ProductsData';
 
 const ProductPage = () => {
     const [selectedColor, setSelectedColor] = useState<'black' | 'grey' | 'turquoise'>('black');
@@ -34,8 +34,18 @@ const ProductPage = () => {
         const productId = parseInt(queryParams.get('id') || '0');
 
         if (productId) {
-            const selectedProduct = products.find((prod) => prod.id === productId);
-            setProduct(selectedProduct || null);
+            RentService.getProductById(productId)
+                .then((fetchedProduct) => {
+                    setProduct(fetchedProduct);
+                    // Set default color to the fetched product's color
+                    if (fetchedProduct.color in imagesByColor) {
+                        setSelectedColor(fetchedProduct.color);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching product:', error);
+                    setProduct(null);
+                });
         }
     }, []);
 
@@ -60,8 +70,12 @@ const ProductPage = () => {
     };
 
     if (!product) {
-        return <p>Product not found!</p>;
+        return <p>Loading product...</p>;
     }
+
+    // console.log(product.categories[0]);
+    // Determine images for the selected color
+    const colorImages = imagesByColor[selectedColor] || imagesByColor['black'];
 
     return (
         <div>
@@ -80,19 +94,19 @@ const ProductPage = () => {
             <div className="flex flex-row justify-center gap-16 mt-32">
                 <div className="flex flex-col justify-center items-center">
                     <ImageGallery
-                        topImage={imagesByColor[selectedColor].topImage}
-                        bottomImages={imagesByColor[selectedColor].bottomImages}
+                        topImage={colorImages.topImage}
+                        bottomImages={colorImages.bottomImages}
                     />
                 </div>
                 <div className="flex flex-col">
                     <ProductDesc
                         name={product.name}
                         description={product.description || ''}
-                        categories={[product.categories]}
+                        categories={product.categories}
                     />
                     <ProductDetails
                         price={`${product.price}`}
-                        colors={['black', 'grey', 'turquoise']}
+                        colors={Object.keys(imagesByColor)}
                         onColorChange={setSelectedColor}
                         onAddToCart={(quantity) =>
                             handleAddToCart({
@@ -101,7 +115,7 @@ const ProductPage = () => {
                                 price: product.price,
                                 quantity,
                                 color: selectedColor,
-                                image: imagesByColor[selectedColor].topImage,
+                                image: colorImages.topImage,
                             })
                         }
                     />

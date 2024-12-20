@@ -3,52 +3,18 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "postgresql" // Adjust as needed for your database
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  role     UserRole
-  email    String   @unique
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
   password String
-  orders   Order[]
-}
-
-model Order {
-  id         Int         @id @default(autoincrement())
-  userId     Int
-  totalPrice Float
-  status     OrderStatus
-  user       User        @relation(fields: [userId], references: [id])
-  items      OrderItem[]
-}
-
-model Product {
-  id          Int               @id @default(autoincrement())
-  name        String
-  price       Float
-  stock       Int
-  description String?
-  orderItems  OrderItem[]
-  categories  Category[]
-}
-
-model OrderItem {
-  id         Int     @id @default(autoincrement())
-  orderId    Int
-  productId  Int
-  quantity   Int
-  finalPrice Float
-  order      Order   @relation(fields: [orderId], references: [id])
-  product    Product @relation(fields: [productId], references: [id])   
-}
-
-model Category {
-  id          Int               @id @default(autoincrement())
-  name        String
-  description String?
-  products    Product[]
+  role     UserRole
+  orders   Order[]   @relation("UserOrders")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum UserRole {
@@ -56,8 +22,47 @@ enum UserRole {
   ADMIN
 }
 
-enum OrderStatus {
-  PENDING
-  SHIPPED
-  DELIVERED
+model Product {
+  id          Int            @id @default(autoincrement())
+  name        String
+  price       Float
+  stock       Int
+  color       String
+  description String?
+  image       Json           // Stores structured image data
+  categories  Category[]     @relation("ProductCategories")
+  orderItems  OrderItem[]    @relation("ProductOrderItems")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  products  Product[]  @relation("ProductCategories")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  price     Float
+  color     String
+  image     Json      // Stores structured image data
+  product   Product   @relation("ProductOrderItems", fields: [productId], references: [id])
+  productId Int
+  order     Order     @relation(fields: [orderId], references: [id])
+  orderId   Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Order {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation("UserOrders", fields: [userId], references: [id])
+  userId    Int
+  orderItems OrderItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
