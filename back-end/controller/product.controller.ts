@@ -1,6 +1,5 @@
 import productService from '../service/product.service';
 import { Request, Response } from 'express';
-// import { Product } from '../types';
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
@@ -26,8 +25,8 @@ export const getProductById = async (req: Request, res: Response) => {
 
 export const createProduct = async (req: Request, res: Response) => {
     try {
-        const { name, price, stock, color, description, image, categories } = req.body;
-
+        const { name, price, stock, color, description, image } = req.body;
+        console.log(req.body);
         // Validate input
         if (!name || !price || !stock || !color) {
             return res.status(400).json({ error: 'Missing required fields' });
@@ -41,9 +40,6 @@ export const createProduct = async (req: Request, res: Response) => {
             color,
             description,
             image,
-            categories: {
-                connect: categories?.map((categoryId: number) => ({ id: categoryId })), // Connect existing categories
-            },
         });
 
         res.status(201).json(newProduct);
