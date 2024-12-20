@@ -12,6 +12,7 @@ interface CartItem {
 const PaymentForm: React.FC = () => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [formValues, setFormValues] = useState({
+        email: '',
         shippingAddress: '',
         shippingMethod: 'Nova Post',
         cardNumber: '',
@@ -19,6 +20,7 @@ const PaymentForm: React.FC = () => {
         securityCode: '',
     });
     const [formErrors, setFormErrors] = useState({
+        email: '',
         shippingAddress: '',
         cardNumber: '',
         expirationDate: '',
@@ -53,6 +55,11 @@ const PaymentForm: React.FC = () => {
         let error = '';
 
         switch (field) {
+            case 'email':
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    error = 'Email is required and must be a valid email address.';
+                }
+                break;
             case 'shippingAddress':
                 if (!value.trim()) {
                     error = 'Shipping address is required.';
@@ -83,12 +90,14 @@ const PaymentForm: React.FC = () => {
     // Validate the entire form
     const validateForm = () => {
         const errors = {
+            email: '',
             shippingAddress: '',
             cardNumber: '',
             expirationDate: '',
             securityCode: '',
         };
 
+        validateField('email', formValues.email);
         validateField('shippingAddress', formValues.shippingAddress);
         validateField('cardNumber', formValues.cardNumber);
         validateField('expirationDate', formValues.expirationDate);
@@ -110,7 +119,6 @@ const PaymentForm: React.FC = () => {
             alert('Payment successful!');
         } else {
             console.log('Form has errors:', formErrors);
-            alert('Payment form filled incorectly');
         }
     };
 
@@ -120,7 +128,17 @@ const PaymentForm: React.FC = () => {
                 {/* Email */}
                 <div className="mb-4">
                     <label className="block text-sm font-bold">Email</label>
-                    <p className="font-bold">John.Smith@email.example.com</p>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="example@example.com"
+                        value={formValues.email}
+                        onChange={handleChange}
+                        className={`w-full border rounded px-3 py-2 bg-black text-white focus:outline-none focus:ring-1 focus:ring-white ${
+                            formErrors.email ? 'border-red-500' : 'border-white'
+                        }`}
+                    />
+                    {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
                 </div>
 
                 <hr className="my-4 border-white" />
