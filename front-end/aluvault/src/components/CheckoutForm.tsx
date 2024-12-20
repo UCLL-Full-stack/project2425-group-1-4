@@ -123,26 +123,8 @@ const PaymentForm: React.FC = () => {
     };
 
     return (
-        <div className="p-6 w-1/3 shadow-md text-white bg-neutral-950 ml-4">
+        <div className="p-6 w-1/3 shadow-md text-white bg-neutral-950 m-auto">
             <form onSubmit={handleSubmit}>
-                {/* Email */}
-                <div className="mb-4">
-                    <label className="block text-sm font-bold">Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="example@example.com"
-                        value={formValues.email}
-                        onChange={handleChange}
-                        className={`w-full border rounded px-3 py-2 bg-black text-white focus:outline-none focus:ring-1 focus:ring-white ${
-                            formErrors.email ? 'border-red-500' : 'border-white'
-                        }`}
-                    />
-                    {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
-                </div>
-
-                <hr className="my-4 border-white" />
-
                 {/* Cart Items */}
                 <div className="mb-6">
                     <h2 className="text-lg font-bold mb-2">Order Summary</h2>
@@ -163,6 +145,23 @@ const PaymentForm: React.FC = () => {
                     <div className="font-bold text-right">
                         Total: ${calculateTotalPrice().toFixed(2)}
                     </div>
+                </div>
+
+                <hr className="my-4 border-white" />
+                {/* Email */}
+                <div className="mb-4">
+                    <label className="block text-sm font-bold">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="example@example.com"
+                        value={formValues.email}
+                        onChange={handleChange}
+                        className={`w-full border rounded px-3 py-2 bg-black text-white focus:outline-none focus:ring-1 focus:ring-white ${
+                            formErrors.email ? 'border-red-500' : 'border-white'
+                        }`}
+                    />
+                    {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
                 </div>
 
                 <hr className="my-4 border-white" />
